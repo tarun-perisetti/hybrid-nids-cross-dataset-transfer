@@ -1,0 +1,68 @@
+=================================================================
+STEP 0 — Detecting files
+=================================================================
+  Format : PARQUET
+  Files  : 1
+    CIC-BoT-IoT-V2.parquet
+
+=================================================================
+STEP 1 — Detecting label column
+=================================================================
+  Columns in first file (first 12): ['Protocol', 'Flow Duration', 'Total Fwd Packets', 'Total Backward Packets', 'Fwd Packets Length Total', 'Bwd Packets Length Total', 'Fwd Packet Length Max', 'Fwd Packet Length Min', 'Fwd Packet Length Mean', 'Fwd Packet Length Std', 'Bwd Packet Length Max', 'Bwd Packet Length Min']
+  Strategy : B — Attack + Label cols → BoT-IoT / ToN-IoT style
+
+=================================================================
+STEP 2 — Collecting training sample for feature selection
+=================================================================
+  Streaming all files (batch=200,000)...
+  Total rows: 11,503,556
+
+  Label distribution (original labels):
+    DDoS: 4,786,502
+    DoS: 4,781,782
+    Reconnaissance: 1,896,036
+    Normal: 38,435
+    Theft: 801
+
+  Training sample size: 400,000 rows  (~80% of data, capped at 400,000)
+
+=================================================================
+STEP 3 — Feature selection (on training sample only)
+=================================================================
+  Constant columns   : 10  ['Fwd PSH Flags', 'Fwd URG Flags', 'Fwd Avg Bytes/Bulk', 'Fwd Avg Packets/Bulk', 'Fwd Avg Bulk Rate', 'Bwd Avg Bytes/Bulk', 'Bwd Avg Packets/Bulk', 'Bwd Avg Bulk Rate', 'Init Fwd Win Bytes', 'Fwd Seg Size Min']
+  Computing correlation matrix (67 features)...
+  Corr dropped       : 11  ['Avg Bwd Segment Size', 'Avg Fwd Segment Size', 'Bwd Packets Length Total', 'ECE Flag Count', 'Fwd Act Data Packets', 'PSH Flag Count', 'Subflow Bwd Bytes', 'Subflow Bwd Packets', 'Subflow Fwd Bytes', 'Subflow Fwd Packets', 'URG Flag Count']
+  ── SUMMARY ──────────────────────────────────────────
+  Total features before: 77
+  Constant removed     : 10
+  Correlation removed  : 11
+  FINAL FEATURE COUNT  : 56
+  FINAL FEATURES       : ['ACK Flag Count', 'Active Max', 'Active Mean', 'Active Min', 'Active Std', 'Avg Packet Size', 'Bwd Header Length', 'Bwd IAT Max', 'Bwd IAT Mean', 'Bwd IAT Min', 'Bwd IAT Std', 'Bwd IAT Total', 'Bwd PSH Flags', 'Bwd Packet Length Max', 'Bwd Packet Length Mean', 'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Bwd Packets/s', 'Bwd URG Flags', 'CWE Flag Count', 'Down/Up Ratio', 'FIN Flag Count', 'Flow Bytes/s', 'Flow Duration', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s', 'Fwd Header Length', 'Fwd IAT Max', 'Fwd IAT Mean', 'Fwd IAT Min', 'Fwd IAT Std', 'Fwd IAT Total', 'Fwd Packet Length Max', 'Fwd Packet Length Mean', 'Fwd Packet Length Min', 'Fwd Packet Length Std', 'Fwd Packets Length Total', 'Fwd Packets/s', 'Idle Max', 'Idle Mean', 'Idle Min', 'Idle Std', 'Init Bwd Win Bytes', 'Packet Length Max', 'Packet Length Mean', 'Packet Length Min', 'Packet Length Std', 'Packet Length Variance', 'Protocol', 'RST Flag Count', 'SYN Flag Count', 'Total Backward Packets', 'Total Fwd Packets']
+  ─────────────────────────────────────────────────────
+
+=================================================================
+STEP 4 — Writing cleaned full dataset (streaming)
+=================================================================
+  Rows with NaN/Inf dropped: 0
+  Total rows written       : 11,503,556
+  Saved: /kaggle/working/cleaned_full.parquet
+
+=================================================================
+STEP 5 — Verification
+=================================================================
+  Shape: (11503556, 57)
+  Label distribution (cleaned dataset):
+attack_cat
+DDoS              4786502
+DoS               4781782
+Reconnaissance    1896036
+Normal              38435
+Theft                 801
+
+=================================================================
+DONE.
+Upload these files to Kaggle as a new dataset:
+  cleaned_full.parquet
+  feature_stats.csv
+  preprocessing_report.txt
+=================================================================

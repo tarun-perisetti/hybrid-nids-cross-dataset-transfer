@@ -20,9 +20,14 @@ Cleaned copies used in the experiments (Kaggle mirrors):
 
 Raw data are not included in this repository.
 
+### Preprocessing (run before the experiments)
+
+1. `preprocessing/01_clean_dataset.py`: run once per dataset (set `DATASET_FOLDER` to the dataset's input folder). It streams all files, assigns the label column, draws a random sample of at most 400k rows, removes constant columns and one column of each pair with absolute Pearson correlation above 0.995 (decided on the sample, without labels), then writes `cleaned_full.parquet` for the whole dataset with rows containing missing or infinite values removed. The printed reports of the three runs are in `preprocessing/logs/` (55, 53 and 56 columns kept for CIC-IDS2017, CSE-CIC-IDS2018 and CIC-BoT-IoT).
+2. `preprocessing/02_align_features.py`: maps the column names of the three cleaned files onto one snake-case vocabulary, keeps the 42 columns common to all three plus `attack_cat`, normalises benign labels to `Normal`, and writes `aligned_IDS2017.parquet`, `aligned_IDS2018.parquet`, `aligned_BOT_IoT.parquet` and `feature_intersection.csv`. Ports, protocol and addresses are not among the 42 columns. Edit the three input paths at the top of the script.
+
 ### Input format expected by `scripts/run_experiment.py`
 
-One file per dataset, `aligned_IDS2017.parquet`, `aligned_IDS2018.parquet`, `aligned_BOT_IoT.parquet`, in the directory `ALIGNED_DIR`. Each holds the 42 shared features (names in `FEATURES_42` in the script) and an `attack_cat` column (`Normal` or the attack category). Preparation per dataset: drop rows with missing or infinite values, drop constant columns, drop one column of each pair with absolute Pearson correlation above 0.995 (computed on a label-free sample of at most 400k rows), harmonise column names to snake case, keep the 42 columns common to the three datasets. Ports, protocol and addresses are not used.
+The three `aligned_*.parquet` files from step 2 in the directory `ALIGNED_DIR`, each with the 42 shared features (`FEATURES_42` in the script) and an `attack_cat` column.
 
 ## Running
 
@@ -41,6 +46,7 @@ python scripts/make_figures.py results aggregated figures
 
 - `results/<source>_s<seed>/`: per-seed outputs of the nine runs (`2017`, `2018`, `BOT` with seeds 42, 7, 2026).
 - `aggregated/`: mean and SD over seeds, paired tests, Friedman tests, rank correlations, routing, AUC, thresholds (raw and used), timing, inference time, model size, convergence, hyperparameters, score-exceedance table.
+- `preprocessing/`: cleaning and feature-alignment scripts and the cleaning logs.
 - `scripts/`: experiment runner and the aggregation, table and figure scripts.
 
 ## Mapping from paper to files
