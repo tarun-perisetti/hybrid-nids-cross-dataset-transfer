@@ -1,0 +1,3 @@
+Source,Seed,Stage1,TauRaw,TauUsed
+IDS2017,2026,RF,0.05,0.3
+IDS2017,2026,XGB,0.02,0.3

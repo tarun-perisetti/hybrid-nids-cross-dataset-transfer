@@ -1,0 +1,15 @@
+Source,Component,Metric,Value,Seed
+BOT_IoT,RF,n_trees,200,42
+BOT_IoT,XGB,n_trees,200,42
+BOT_IoT,AE_fixed,n_params,33530,42
+BOT_IoT,IsoF_fixed,n_trees,300,42
+BOT_IoT,VAE_fixed,n_params,11274,42
+BOT_IoT,RF_AE_GA,n_params,33530,42
+BOT_IoT,RF_AE_PSO,n_params,34050,42
+BOT_IoT,RF_AE_DE,n_params,34570,42
+BOT_IoT,RF_IsoF_GA,n_trees,400,42
+BOT_IoT,RF_IsoF_PSO,n_trees,400,42
+BOT_IoT,RF_IsoF_DE,n_trees,100,42
+BOT_IoT,XGB_VAE_GA,n_params,10490,42
+BOT_IoT,XGB_VAE_PSO,n_params,10490,42
+BOT_IoT,XGB_VAE_DE,n_params,10490,42
